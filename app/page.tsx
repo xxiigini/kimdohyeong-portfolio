@@ -10,7 +10,7 @@ export default function HomePage() {
       <section className="mb-20">
         <HeroImage
           src="/images/home-hero.jpg"
-          alt="Out of Plane — gallery installation, 9 × 6 ft Voronoi structure"
+          alt="Out of Plane gallery installation, 9 × 6 ft Voronoi structure"
           label="FEATURED · OUT OF PLANE · 2026"
         />
       </section>
@@ -25,7 +25,7 @@ export default function HomePage() {
         </h1>
         <p className="mt-6 text-ink-secondary text-base max-w-lg leading-relaxed">
           From Korea, currently in Milwaukee. Working between 3D animation, brand systems,
-          and industrial form — wherever the problem leads.
+          and industrial form, wherever the problem leads.
         </p>
       </section>
 

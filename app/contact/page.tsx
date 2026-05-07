@@ -7,7 +7,7 @@ export default function ContactPage() {
     <div className="px-6 max-w-3xl mx-auto">
       <header className="mb-16">
         <div className="font-mono-tabular text-2xs uppercase tracking-mono-wide text-ink-tertiary mb-4">
-          Contact — open to projects, collaboration, anywhere
+          Contact · open to projects, collaboration, anywhere
         </div>
         <h1 className="text-3xl md:text-4xl font-medium tracking-tightest text-balance leading-tight">
           The fastest way to reach me is email.
@@ -56,7 +56,7 @@ export default function ContactPage() {
           </div>
           <p className="text-lg text-ink-secondary text-balance">
             Based in Milwaukee, originally from Korea.<br />
-            Open to freelance, full-time, and collaboration — locally or remote.
+            Open to freelance, full-time, and collaboration. Locally or remote.
           </p>
         </section>
       </div>

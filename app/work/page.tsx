@@ -8,10 +8,10 @@ export default function WorkPage() {
     <div className="px-6 max-w-[1400px] mx-auto">
       <header className="mb-16 max-w-2xl">
         <div className="font-mono-tabular text-2xs uppercase tracking-mono-wide text-ink-tertiary mb-4">
-          Index — All projects
+          Index · All projects
         </div>
         <h1 className="text-3xl md:text-4xl font-medium tracking-tightest text-balance">
-          Selected work, 2024 — present.
+          Selected work, 2024 to present.
         </h1>
       </header>
 

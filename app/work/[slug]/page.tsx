@@ -52,7 +52,7 @@ export default function CaseStudyPage({ params }: { params: { slug: string } }) 
       <section className="mt-24 max-w-5xl mx-auto">
         <div className="max-w-3xl mx-auto mb-12">
           <div className="font-mono-tabular text-2xs uppercase tracking-mono-wide text-ink-tertiary mb-2">
-            03 — Process
+            03 · Process
           </div>
           <h2 className="text-2xl font-medium tracking-tight">How it was made</h2>
         </div>
@@ -103,7 +103,7 @@ export default function CaseStudyPage({ params }: { params: { slug: string } }) 
           className="block group max-w-3xl mx-auto"
         >
           <div className="font-mono-tabular text-2xs uppercase tracking-mono-wide text-ink-tertiary mb-2">
-            Next — {next.number}
+            Next · {next.number}
           </div>
           <div className="flex items-baseline justify-between">
             <h3 className="text-2xl font-medium tracking-tight group-hover:text-ink-secondary transition-colors">

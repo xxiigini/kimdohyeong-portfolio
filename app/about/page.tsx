@@ -7,7 +7,7 @@ export default function AboutPage() {
     <div className="px-6 max-w-3xl mx-auto">
       <header className="mb-16">
         <div className="font-mono-tabular text-2xs uppercase tracking-mono-wide text-ink-tertiary mb-4">
-          About — {site.name.en} · {site.name.ko}
+          About · {site.name.en} · {site.name.ko}
         </div>
         <h1 className="text-3xl md:text-4xl font-medium tracking-tightest text-balance leading-tight">
           {site.role.en}
@@ -32,7 +32,7 @@ export default function AboutPage() {
         </p>
         <p>
           What I&rsquo;m trying to make is the kind of work that makes someone stop and ask{' '}
-          <em>how did they do that?</em> Not loud, not flashy — just precise enough that it
+          <em>how did they do that?</em> Not loud, not flashy, just precise enough that it
           pulls a second look. Right now I&rsquo;m finishing my BFA at UWM and looking for
           full-time design work in the U.S., ideally somewhere I can keep doing this across
           3D, brand, and editorial all at once.
