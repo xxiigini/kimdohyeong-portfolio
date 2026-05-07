@@ -11,6 +11,13 @@ export const metadata: Metadata = {
     template: `%s · ${site.name.en}`,
   },
   description: site.role.en,
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico', sizes: 'any' },
+    ],
+    apple: '/apple-touch-icon.png',
+  },
   openGraph: {
     title: `${site.name.en} — Designer`,
     description: site.role.en,
