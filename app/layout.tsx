@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Analytics } from '@vercel/analytics/react';
+import { Analytics } from '@vercel/analytics/next';
 import { StatusBar } from '@/components/layout/StatusBar';
 import { Footer } from '@/components/layout/Footer';
 import { ThemeProvider, themeInitScript } from '@/lib/theme';
