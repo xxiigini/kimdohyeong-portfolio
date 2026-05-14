@@ -50,7 +50,7 @@ export default function ContactPage() {
           </ul>
         </section>
 
-        <section className="pt-8 border-hairline border-t border-line">
+        <section>
           <div className="font-mono-tabular text-2xs uppercase tracking-mono-wide text-ink-tertiary mb-3">
             Currently
           </div>
