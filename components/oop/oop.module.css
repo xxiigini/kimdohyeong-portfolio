@@ -1,0 +1,173 @@
+/* Out of Plane 히어로: 스크롤 동안 화면에 고정되는 3D 무대 */
+.oop {
+  position: relative;
+  height: 330vh;
+  --oop-shadow: 0.11;
+}
+:global(.medium) .oop { --oop-shadow: 0.28; }
+:global(.dark) .oop { --oop-shadow: 0.45; }
+
+.sticky {
+  position: sticky;
+  top: 4.5rem;
+  height: calc(100svh - 4.5rem);
+  overflow: hidden;
+}
+.inner {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding-top: 28px;
+  padding-bottom: 18px;
+}
+.titleblock {
+  position: relative;
+  z-index: 2;
+  max-width: 48rem;
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.stage {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 220px;
+  margin: 4px -24px 0;
+  touch-action: pan-y;
+  outline: none;
+}
+.stage canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.stage[data-grab] { cursor: grab; }
+.stage[data-dragging] { cursor: grabbing; }
+.stage:focus-visible { box-shadow: inset 0 0 0 1.5px var(--ink); }
+
+.tip {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 3;
+  pointer-events: none;
+  padding: 6px 9px 7px;
+  border-radius: 6px;
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 12px;
+  line-height: 16px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.tip[data-on='1'] { opacity: 1; }
+.tipTitle { font-weight: 500; }
+.tipSub {
+  display: block;
+  margin-top: 2px;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 10px;
+  line-height: 14px;
+  letter-spacing: 0.04em;
+  opacity: 0.7;
+}
+.loading {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.foot {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  padding-top: 10px;
+}
+.cap {
+  position: relative;
+  min-height: 44px;
+  min-width: 18rem;
+}
+.cap > div {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cap > div[aria-hidden='true'] {
+  opacity: 0;
+  transform: translateY(6px);
+}
+.capText {
+  margin-top: 4px;
+  font-size: 15px;
+  line-height: 22px;
+  white-space: nowrap;
+}
+.side {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  white-space: nowrap;
+}
+.side button {
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: var(--ink-secondary);
+  background: none;
+  border: 0;
+  padding: 4px 0;
+  cursor: pointer;
+  border-bottom: 0.5px solid var(--line);
+}
+.side button:hover { color: var(--ink); border-color: var(--ink); }
+.side button:focus-visible { outline: 1.5px solid var(--ink); outline-offset: 3px; }
+.progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--line);
+}
+.progress i {
+  position: absolute;
+  inset: 0;
+  background: var(--ink-tertiary);
+  transform-origin: 0 0;
+  transform: scaleX(0);
+}
+
+/* 넓은 화면: 왼쪽 글, 오른쪽 모델 */
+@media (min-width: 1100px) {
+  .inner {
+    display: grid;
+    grid-template-columns: minmax(300px, 27%) 1fr;
+    grid-template-rows: auto 1fr auto;
+    column-gap: 24px;
+    padding-bottom: 28px;
+  }
+  .titleblock { grid-column: 1; grid-row: 1; }
+  .stage { grid-column: 2; grid-row: 1 / 4; margin: -12px -24px 0 0; min-height: 0; }
+  .foot { grid-column: 1; grid-row: 3; flex-direction: column; align-items: flex-start; gap: 18px; padding-bottom: 14px; }
+  .cap { min-width: 0; width: 100%; min-height: 48px; }
+  .capText { white-space: normal; }
+  .side { flex-wrap: wrap; gap: 8px 16px; }
+}
+@media (max-width: 767px) {
+  .oop { height: 290vh; }
+  .inner { padding-top: 20px; }
+  .foot { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .side { flex-wrap: wrap; gap: 10px 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .titleblock,
+  .cap > div,
+  .tip { transition: none !important; }
+}

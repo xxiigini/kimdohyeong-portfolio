@@ -24,7 +24,7 @@ export type Project = {
     label: string;
     slug: string;
   };
-  showcase?: 'lamy'; // 전용 히어로를 쓰는 프로젝트 (components/lamy)
+  showcase?: 'lamy' | 'oop'; // 전용 히어로를 쓰는 프로젝트 (components/lamy, components/oop)
 };
 
 export type ProcessStep = {
@@ -167,6 +167,7 @@ export const projects: Project[] = [
       type: 'image',
       src: '/images/oop-gallery.jpg',
     },
+    showcase: 'oop',
     excerpt:
       'A 9 × 6 ft parametric Voronoi installation. The most random pattern, made through perfect planning.',
     context:
@@ -209,6 +210,7 @@ export const projects: Project[] = [
         title: 'Installation',
         body: "The final piece was mounted on a gallery wall, suspended from a row of black anchor brackets at the top edge, letting the structure read as if it's pulled out of the surface rather than attached to it.",
         media: [
+          { type: 'image', src: '/images/oop-gallery.jpg', caption: 'Gallery view' },
           { type: 'image', src: '/images/oop-installed.jpg', caption: 'Installed at the gallery · three-panel display' },
         ],
       },
