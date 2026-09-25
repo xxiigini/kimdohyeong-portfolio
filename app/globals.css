@@ -21,6 +21,10 @@
     --line-strong: #C8C5BB;
 
     --accent-online: #1D9E75;
+
+    /* LAMY 분해 섹션: 도면 종이 색 + 치수 빨강 */
+    --paper: #FAFAF7;
+    --draft-red: #E00C10;
   }
 
   /* MEDIUM MODE — warm gray, halfway between light and dark */
@@ -38,6 +42,8 @@
     --line-strong: #3D3B36;
 
     --accent-online: #2DB082;
+
+    --paper: #E7E5DF;
   }
 
   /* DARK MODE */
@@ -55,6 +61,8 @@
     --line-strong: #3D3B36;
 
     --accent-online: #2DB082;
+
+    --paper: #DDDBD4;
   }
 
   html {

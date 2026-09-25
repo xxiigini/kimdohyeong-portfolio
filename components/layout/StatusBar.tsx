@@ -74,7 +74,7 @@ export function StatusBar() {
 
         <div className="flex items-center gap-3">
           <span suppressHydrationWarning>
-            {time || '—'} {site.location.current.tzAbbr}
+            {time || '--:--:--'} {site.location.current.tzAbbr}
           </span>
           <span className="text-ink-tertiary">·</span>
           <span>◐ {site.tools.join(' · ')}</span>

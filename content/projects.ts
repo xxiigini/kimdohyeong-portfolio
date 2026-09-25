@@ -24,6 +24,7 @@ export type Project = {
     label: string;
     slug: string;
   };
+  showcase?: 'lamy'; // 전용 히어로를 쓰는 프로젝트 (components/lamy)
 };
 
 export type ProcessStep = {
@@ -302,6 +303,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'lamy-reverse-engineering',
+    showcase: 'lamy',
     number: '001',
     title: 'LAMY Safari · Reverse Engineering',
     category: 'Industrial / Modeling',
@@ -352,7 +354,7 @@ export const projects: Project[] = [
         title: 'Rendering in KeyShot',
         body: 'Final rendering moved to KeyShot. The pen was placed in a desk environment to read as a real object in real space, not a product shot floating on white. The materials (red ABS body, brushed steel clip, black nib) were tuned to match the real pen as closely as possible.',
         media: [
-          { type: 'video', src: '/videos/lamy-exploded.mp4', caption: 'Exploded view · all five components' },
+          { type: 'image', src: '/images/lamy-hero.jpg', caption: 'KeyShot · desk environment' },
         ],
       },
     ],

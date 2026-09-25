@@ -1,33 +1,42 @@
-# Out of Plane 업데이트 — 설치 방법
+# LAMY 페이지 업데이트
 
-이 압축파일에는:
+## 바뀌는 것
+- LAMY 케이스 스터디: 10색 라인업 히어로 + 스크롤 분해 섹션 (프리뷰로 본 그대로)
+- 다른 프로젝트 페이지는 그대로. 라벨의 em dash만 가운뎃점으로 바뀜 (예: 002 · 3D / Motion)
+- 상단바 시계가 뜨기 전 자리표시: --:--:--
+- Process 05 이미지: 분해 영상 대신 책상 렌더 (분해는 위 섹션으로 이동)
+- 새 패키지 없음. npm install 필요 없음
 
-1. **`portfolio/content/projects.ts`** — Out of Plane 케이스 스터디 추가 (003번)
-2. **`portfolio/lib/site-config.ts`** — status bar의 "now designing" 텍스트 → "Open to new projects"
-3. **`portfolio/public/images/`** — Out of Plane 이미지 5장 (웹 최적화 jpg)
-   - `oop-gallery.jpg` — 갤러리 mockup (히어로)
-   - `oop-grasshopper.jpg` — Grasshopper 정의
-   - `oop-labeling.jpg` — 셀 라벨링 다이어그램
-   - `oop-hangers.jpg` — PLA-CF hanger parts
-   - `oop-installed.jpg` — 실제 설치 사진 (임시, 나중에 교체)
+## 파일
+새로 추가
+- components/lamy/ : 히어로, 분해 섹션, 애니메이션 엔진, 재색상 렌더러, CSS
+- components/case-study/CaseStudyBody.tsx : 본문을 공용 컴포넌트로 분리
+- content/lamy.ts : 색 이름, 메모, 치수, 부품 위치 (문구는 여기서 수정)
+- public/images/lamy-lineup/ : 10색 펜 + 그림자
+- public/images/lamy-exploded/lg, sm : 분해 프레임 89장 (데스크탑 1920 / 모바일 960)
 
-## 설치 (Soban 때랑 똑같음)
+수정
+- app/work/[slug]/page.tsx, app/globals.css, content/projects.ts
+- components/case-study/CaseStudyHero.tsx, CaseStudySection.tsx
+- components/layout/StatusBar.tsx
 
-1. 이 zip 압축 풀기
-2. 안의 `portfolio` 폴더 내용물을 너의 기존 `portfolio` 폴더에 복사 (덮어쓰기)
-3. PowerShell에서 사이트 켜져 있으면 자동 새로고침
-   - 안 켜져 있으면: `cd "$env:USERPROFILE\Downloads\portfolio-setup-v2\portfolio"` 후 `npm run dev`
-4. 브라우저에서 `localhost:3000` 새로고침
+## 설치
+1. zip 풀기
+2. 안의 폴더와 파일을 레포 루트(package.json이랑 .git 있는 폴더)에 그대로 복사, 덮어쓰기
+   zip 안에는 portfolio 폴더가 없음. 폴더째 넣지 말고 내용물만.
+3. 로컬 확인 (선택): npm run dev 후 http://localhost:3000/work/lamy-reverse-engineering
+4. 푸시
+   git add -A
+   git commit -m "LAMY: color lineup hero + interactive exploded view"
+   git push
 
-## 확인 사항
+## 정리 (선택, 한 번만)
+예전 zip 덮어쓰기 때 잘못 들어간 폴더 두 개. 레포 루트에서:
+   Remove-Item -LiteralPath '.\portfolio' -Recurse -Force
+   Remove-Item -LiteralPath '.\public\{videos,images}' -Recurse -Force
+그다음 위 4번 git 명령 그대로. ({videos,images} 안의 10MB 중복 영상도 같이 빠짐)
 
-홈페이지에 3개 프로젝트 다 보여야 해:
-- 001 Acro Automation Systems · 3D / Motion · 2024
-- 002 Soban Korean Eatery · Brand & Menu System · 2025
-- 003 Out of Plane · Parametric / Installation · 2026
-
-Out of Plane 클릭하면 케이스 스터디 페이지 보임. 5단계 process가 다 보여야 함.
-
-## 나중에 hero 사진 교체할 때
-
-`oop-installed.jpg` 자리에 더 좋은 사진이 생기면, 같은 파일명으로 덮어쓰기만 하면 돼.
+## 진짜 렌더로 바꿀 때
+지금 10색은 Rhino 렌더 한 장을 재색상한 임시본.
+Rhino에서 같은 Named View로 투명 배경, 바닥 그림자 없이 10장 뽑아서 주면
+크롭이랑 변환은 맞춰서 다시 줌.

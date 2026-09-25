@@ -7,7 +7,7 @@ export function CaseStudyHero({ project }: { project: Project }) {
       {/* Title block */}
       <div className="max-w-4xl mb-12">
         <div className="font-mono-tabular text-2xs uppercase tracking-mono-wide text-ink-tertiary mb-4">
-          {project.number} — {project.category}
+          {project.number} · {project.category}
         </div>
         <h1 className="text-3xl md:text-4xl font-medium tracking-tightest text-balance leading-tight">
           {project.title}
