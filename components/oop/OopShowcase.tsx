@@ -16,6 +16,7 @@ export function OopShowcase({ project }: { project: Project }) {
   const secRef = useRef<HTMLElement>(null);
   const stickyRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
+  const footRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const tipRef = useRef<HTMLDivElement>(null);
@@ -48,6 +49,7 @@ export function OopShowcase({ project }: { project: Project }) {
           tipTitle: tipTitleRef.current,
           tipSub: tipSubRef.current,
           title: titleRef.current,
+          foot: footRef.current,
           progress: progressRef.current,
           replay: replayRef.current,
           counts: countsRef.current,
@@ -84,7 +86,7 @@ export function OopShowcase({ project }: { project: Project }) {
     <>
       <section ref={secRef} className={styles.oop} aria-label={`${project.title}, interactive model`}>
         <div ref={stickyRef} className={styles.sticky}>
-          <div className={`max-w-[1400px] mx-auto px-6 ${styles.inner}`}>
+          <div className={styles.inner}>
             <div ref={titleRef} className={styles.titleblock}>
               <div className="font-mono-tabular text-2xs uppercase tracking-mono-wide text-ink-tertiary mb-4">
                 {project.number} · {project.category}
@@ -114,7 +116,7 @@ export function OopShowcase({ project }: { project: Project }) {
               </div>
             </div>
 
-            <div className={styles.foot}>
+            <div ref={footRef} className={styles.foot}>
               <div className={styles.cap}>
                 {OOP_CAPTIONS.map((c, i) => (
                   <div

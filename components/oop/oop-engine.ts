@@ -32,6 +32,7 @@ export type OopEls = {
   tipTitle: HTMLElement;
   tipSub: HTMLElement;
   title: HTMLElement;
+  foot: HTMLElement;
   caps: HTMLElement[];
   progress: HTMLElement;
   replay: HTMLButtonElement;
@@ -80,7 +81,7 @@ type Hit = { kind: 'joint'; J: Joint } | { kind: 'dowel'; k: number };
 
 export function createOopEngine(THREE: Three, data: OopData, els: OopEls, opts: { reduceMotion: boolean }): OopEngine {
   const { meta } = data;
-  const { section, sticky, stage, canvas, tip, tipTitle, tipSub, title, caps, progress } = els;
+  const { section, sticky, stage, canvas, tip, tipTitle, tipSub, title, foot, caps, progress } = els;
   const reduce = opts.reduceMotion;
   let destroyed = false;
   const offs: (() => void)[] = [];
@@ -314,8 +315,8 @@ export function createOopEngine(THREE: Three, data: OopData, els: OopEls, opts: 
   }
 
   /* ---------- camera rig ---------- */
-  const cam = { yaw: 0, pitch: 0, dist: 0, fov: 20, tx: 0 };
-  const scrollPose = { yaw: 0, pitch: 0, zoom: 1, fov: 20, tx: 0 };
+  const cam = { yaw: 0, pitch: 0, dist: 0, fov: 20, tx: 0, shift: 0 };
+  const scrollPose = { yaw: 0, pitch: 0, zoom: 1, fov: 20, tx: 0, front: 1 };
   const drag = { yaw: 0, pitch: 0, vy: 0, vp: 0, active: false };
   const hover = { yaw: 0, pitch: 0, ty: 0, tp: 0 };
   const corners: Vec3[] = [];
@@ -328,7 +329,7 @@ export function createOopEngine(THREE: Three, data: OopData, els: OopEls, opts: 
     back.set(Math.sin(yaw) * Math.cos(pitch), Math.sin(pitch), Math.cos(yaw) * Math.cos(pitch));
     right.crossVectors(YUP, back).normalize();
     up.crossVectors(back, right);
-    const tv = Math.tan((camera.fov * D2R) / 2), th = tv * camera.aspect, m = W < 600 ? 0.94 : 0.9;
+    const tv = Math.tan((camera.fov * D2R) / 2), th = tv * camera.aspect, m = W < 600 ? 0.94 : 0.93;
     let d = 0;
     for (const c of corners) {
       tmp.copy(c).sub(center);
@@ -344,6 +345,51 @@ export function createOopEngine(THREE: Three, data: OopData, els: OopEls, opts: 
     camera.position.copy(look).addScaledVector(back, cam.dist);
     camera.lookAt(look);
   }
+  /*
+   * 넓은 화면에서는 캔버스가 화면 전체를 쓰고 글은 왼쪽에 겹쳐 올라감.
+   * 모델은 화면 정가운데에 최대한 크게 두고, 글이랑 겹칠 때만 필요한 만큼 오른쪽으로 비킴.
+   * (정면일 때만 적용, 돌기 시작하면 모델이 좁아져서 자연스럽게 가운데로 돌아옴)
+   */
+  let frontShift = 0, frontMul = 1, appliedShift = NaN;
+  function measureSafe() {
+    const sr = stage.getBoundingClientRect();
+    let safe = 0;
+    for (const el of [title, foot]) {
+      const r = el.getBoundingClientRect();
+      const overlapY = r.bottom > sr.top + 1 && r.top < sr.bottom - 1;
+      const overlapX = r.left < sr.right && r.right > sr.left;
+      if (overlapY && overlapX) safe = Math.max(safe, r.right - sr.left + 20);
+    }
+    return safe;
+  }
+  function computeFrontFrame() {
+    frontShift = 0;
+    frontMul = 1;
+    const safe = measureSafe();
+    if (safe <= 0) return;
+    const f0 = camera.fov;
+    camera.fov = 20;
+    const d0 = fitDistance(0, 0);
+    camera.fov = f0;
+    const th = Math.tan((20 * D2R) / 2) * camera.aspect;
+    let hw = 0;
+    for (const c of corners) hw = Math.max(hw, (Math.abs(c.x - center.x) / ((d0 - (c.z - center.z)) * th)) * (W / 2));
+    const L = W / 2 - hw, R = W / 2 + hw, mr = 24;
+    if (L >= safe) return;
+    if (R + (safe - L) <= W - mr) {
+      frontShift = safe - L;
+      return;
+    }
+    const Wa = Math.max(100, W - safe - mr);
+    frontMul = (2 * hw) / Wa;
+    frontShift = safe + Wa / 2 - W / 2;
+  }
+  function applyShift(px: number) {
+    if (px === appliedShift) return;
+    appliedShift = px;
+    if (Math.abs(px) < 0.25) camera.clearViewOffset();
+    else camera.setViewOffset(W, H, -px, 0, W, H);
+  }
   function resize() {
     const r = stage.getBoundingClientRect();
     W = Math.max(1, Math.round(r.width));
@@ -351,11 +397,15 @@ export function createOopEngine(THREE: Three, data: OopData, els: OopEls, opts: 
     renderer.setSize(W, H, false);
     camera.aspect = W / H;
     camera.updateProjectionMatrix();
+    appliedShift = NaN;
+    computeFrontFrame();
     cam.dist = 0;
     invalidate();
   }
   const ro = new ResizeObserver(resize);
   ro.observe(stage);
+  ro.observe(title);
+  ro.observe(foot);
   offs.push(() => ro.disconnect());
 
   /* ---------- intro: joints fly in from off-screen, then dowels connect ---------- */
@@ -449,6 +499,7 @@ export function createOopEngine(THREE: Three, data: OopData, els: OopEls, opts: 
     scrollPose.zoom = 1 - 0.05 * s1 - 0.4 * s2;
     scrollPose.fov = 20 + 18 * s2;
     scrollPose.tx = 16 * s2;
+    scrollPose.front = 1 - s1;
     title.style.opacity = String(1 - smooth(0.02, 0.2, p) * 0.75);
     progress.style.transform = `scaleX(${p.toFixed(4)})`;
     const ci = p < 0.2 ? 0 : p < 0.62 ? 1 : 2;
@@ -669,7 +720,11 @@ export function createOopEngine(THREE: Three, data: OopData, els: OopEls, opts: 
       camera.fov = cam.fov;
       camera.updateProjectionMatrix();
     }
-    const fd = fitDistance(cam.yaw, cam.pitch) * scrollPose.zoom;
+    const tShift = frontShift * scrollPose.front;
+    cam.shift += (tShift - cam.shift) * ks;
+    if (Math.abs(tShift - cam.shift) > 0.2) moving = true;
+    applyShift(Math.round(cam.shift * 4) / 4);
+    const fd = fitDistance(cam.yaw, cam.pitch) * scrollPose.zoom * (1 + (frontMul - 1) * scrollPose.front);
     if (!cam.dist) cam.dist = fd;
     cam.dist += (fd - cam.dist) * (1 - Math.exp(-dt * 7));
     if (Math.abs(fd - cam.dist) > 0.05) moving = true;

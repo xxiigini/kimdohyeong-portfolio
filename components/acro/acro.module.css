@@ -1,0 +1,115 @@
+/* Acro 히어로: 스크롤 동안 화면에 고정, 스크롤하는 만큼 로봇이 움직임 */
+.acro {
+  position: relative;
+  height: 420vh;
+}
+.sticky {
+  position: sticky;
+  top: 4.5rem;
+  height: calc(100svh - 4.5rem);
+  overflow: hidden;
+}
+.inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 28px 24px 18px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.titleblock {
+  max-width: 48rem;
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.stage {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 200px;
+  margin-top: 12px;
+  display: grid;
+  place-items: center;
+}
+/* 영상 배경이 흰색이라 카드도 모든 테마에서 흰색 (white background decision) */
+.card {
+  position: relative;
+  background: #ffffff;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.card img,
+.card canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.card[data-ready='1'] img { visibility: hidden; }
+
+.foot {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+.caps {
+  position: relative;
+  flex: 1;
+  min-height: 52px;
+}
+.caps > div {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.caps > div[aria-hidden='true'] {
+  opacity: 0;
+  transform: translateY(6px);
+}
+.capText {
+  margin-top: 4px;
+  font-size: 19px;
+  line-height: 26px;
+}
+.readout {
+  color: var(--ink);
+  font-size: 11px;
+  line-height: 14px;
+  white-space: nowrap;
+}
+.rail {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--line);
+}
+.rail i {
+  position: absolute;
+  inset: 0;
+  background: var(--ink);
+  transform-origin: 0 0;
+  transform: scaleX(0);
+}
+.rail b {
+  position: absolute;
+  top: -3px;
+  width: 1px;
+  height: 7px;
+  background: var(--ink-tertiary);
+}
+
+@media (max-width: 767px) {
+  .acro { height: 380vh; }
+  .inner { padding-top: 20px; }
+  .capText { font-size: 16px; line-height: 22px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .titleblock,
+  .caps > div { transition: none !important; }
+}

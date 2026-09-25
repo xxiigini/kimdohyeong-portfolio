@@ -14,6 +14,10 @@
   overflow: hidden;
 }
 .inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-left: 24px;
+  padding-right: 24px;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -144,17 +148,18 @@
   transform: scaleX(0);
 }
 
-/* 넓은 화면: 왼쪽 글, 오른쪽 모델 */
+/* 넓은 화면: 캔버스가 화면 전체, 글은 왼쪽 가장자리에 겹쳐서 (모델은 화면 가운데) */
 @media (min-width: 1100px) {
   .inner {
+    max-width: none;
+    margin: 0;
     display: grid;
-    grid-template-columns: minmax(300px, 27%) 1fr;
+    grid-template-columns: clamp(280px, 20vw, 360px);
     grid-template-rows: auto 1fr auto;
-    column-gap: 24px;
     padding-bottom: 28px;
   }
   .titleblock { grid-column: 1; grid-row: 1; }
-  .stage { grid-column: 2; grid-row: 1 / 4; margin: -12px -24px 0 0; min-height: 0; }
+  .stage { position: absolute; inset: 0; margin: 0; min-height: 0; }
   .foot { grid-column: 1; grid-row: 3; flex-direction: column; align-items: flex-start; gap: 18px; padding-bottom: 14px; }
   .cap { min-width: 0; width: 100%; min-height: 48px; }
   .capText { white-space: normal; }

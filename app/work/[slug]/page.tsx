@@ -4,6 +4,7 @@ import { CaseStudyHero } from '@/components/case-study/CaseStudyHero';
 import { CaseStudyBody } from '@/components/case-study/CaseStudyBody';
 import { LamyShowcase } from '@/components/lamy/LamyShowcase';
 import { OopShowcase } from '@/components/oop/OopShowcase';
+import { AcroShowcase } from '@/components/acro/AcroShowcase';
 
 export function generateStaticParams() {
   return projects.map((p) => ({ slug: p.slug }));
@@ -31,6 +32,18 @@ export default function CaseStudyPage({ params }: { params: { slug: string } }) 
     return (
       <>
         <LamyShowcase project={project} />
+        <article className="px-6 max-w-[1400px] mx-auto pb-20">
+          <CaseStudyBody project={project} next={next} />
+        </article>
+      </>
+    );
+  }
+
+  // Acro: 스크롤하는 만큼 로봇이 한 사이클 움직이는 히어로 (components/acro)
+  if (project.showcase === 'acro') {
+    return (
+      <>
+        <AcroShowcase project={project} />
         <article className="px-6 max-w-[1400px] mx-auto pb-20">
           <CaseStudyBody project={project} next={next} />
         </article>

@@ -24,7 +24,7 @@ export type Project = {
     label: string;
     slug: string;
   };
-  showcase?: 'lamy' | 'oop'; // 전용 히어로를 쓰는 프로젝트 (components/lamy, components/oop)
+  showcase?: 'lamy' | 'oop' | 'acro'; // 전용 히어로를 쓰는 프로젝트 (components/lamy, oop, acro)
 };
 
 export type ProcessStep = {
@@ -52,6 +52,7 @@ export const projects: Project[] = [
       type: 'video',
       src: '/videos/acro-final.mp4',
     },
+    showcase: 'acro',
     excerpt:
       'Hero animation for an 80-year-old Milwaukee robotics company, recreating a system they actually built.',
     context:
