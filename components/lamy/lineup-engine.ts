@@ -29,6 +29,9 @@ export type LineupEngine = {
   destroy: () => void;
 };
 
+/** 히어로 펼치기가 끝났을 때 window에 뜨는 이벤트 */
+export const LAMY_INTRO_DONE = 'lamy:intro-done';
+
 const mk = (v: number): Spring => ({ v, t: v, vel: 0 });
 
 function stepSpring(sp: Spring, k: number, c: number, h: number) {
@@ -190,7 +193,11 @@ export function createLineupEngine(o: LineupEngineOptions): LineupEngine {
     retarget();
     updateZ();
     kick();
-    timers.push(window.setTimeout(() => { intro = false; }, 1500));
+    timers.push(window.setTimeout(() => {
+      intro = false;
+      // 펼치기 끝남: 분해 섹션이 이때부터 프레임 로딩 + WebGL 준비 시작
+      window.dispatchEvent(new Event(LAMY_INTRO_DONE));
+    }, 1500));
   }
 
   const pxFrom = (e: PointerEvent) => {
@@ -265,10 +272,20 @@ export function createLineupEngine(o: LineupEngineOptions): LineupEngine {
   const imgs = o.pens
     .map((el) => el.querySelector('img'))
     .filter((x): x is HTMLImageElement => !!x);
-  Promise.all(imgs.map((im) => im.decode().catch(() => undefined))).then(() => {
-    if (!destroyed) timers.push(window.setTimeout(startSpread, reduceMotion ? 0 : 420));
+  // 펜 이미지 디코딩 + 페이지 로드가 다 끝나고, 한 프레임 그린 다음에 펼치기 시작
+  // (hydration이나 다른 로딩이랑 겹치면 첫 몇 프레임이 끊겨 보임)
+  const pageLoaded = new Promise<void>((res) => {
+    if (document.readyState === 'complete') res();
+    else window.addEventListener('load', () => res(), { once: true });
   });
-  timers.push(window.setTimeout(startSpread, 3000));
+  const nextPaint = () =>
+    new Promise<void>((res) => requestAnimationFrame(() => requestAnimationFrame(() => res())));
+  Promise.all([...imgs.map((im) => im.decode().catch(() => undefined)), pageLoaded])
+    .then(nextPaint)
+    .then(() => {
+      if (!destroyed) timers.push(window.setTimeout(startSpread, reduceMotion ? 0 : 420));
+    });
+  timers.push(window.setTimeout(startSpread, 4000));
 
   return {
     setActive(i: number) {

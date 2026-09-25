@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties, KeyboardEvent, PointerEvent as ReactPointerEvent } from 'react';
 import { useTheme } from '@/lib/theme';
 import { LAMY_COLORS, LAMY_EXPLODED, LAMY_PARTS } from '@/content/lamy';
-import { createFrameRenderer, hexToLin, hexToRgb, toLin } from './frame-renderer';
+import { createFrameRenderer, hexToLin, hexToRgb, toLin, type FrameRenderer } from './frame-renderer';
+import { LAMY_INTRO_DONE } from './lineup-engine';
 import styles from './lamy.module.css';
 
 type Props = {
@@ -65,7 +66,15 @@ export function LamyExploded({ active, onActiveChange }: Props) {
     let wasExploded = false;
     let wasScrolled = false;
 
-    const renderer = createFrameRenderer(host, 'LAMY Safari coming apart into cap, clip, nib, grip section and barrel');
+    // WebGL 준비(셰이더 컴파일)는 무거워서 히어로 펼치기가 끝난 뒤에 만듦
+    let renderer: FrameRenderer | null = null;
+    let boxW = 0;
+    let boxH = 0;
+    const ensureRenderer = () => {
+      if (renderer || destroyed) return;
+      renderer = createFrameRenderer(host, 'LAMY Safari coming apart into cap, clip, nib, grip section and barrel');
+      if (boxW && boxH) renderer.resize(boxW, boxH);
+    };
 
     const nearestLoaded = (t: number) => {
       for (let d = 0; d < NF; d++) {
@@ -79,15 +88,16 @@ export function LamyExploded({ active, onActiveChange }: Props) {
       if (i < 0) return;
       if (!force && i === shown) return;
       const img = imgs[i];
-      if (!img) return;
+      if (!img || !renderer) return;
       renderer.draw(img, { alb: col.alb, mix: col.mix, base: BASE, paper });
       shown = i;
     };
 
     // 첫 프레임, 마지막 프레임 먼저 받고 나머지는 4개씩 순서대로
     const startLoading = () => {
-      if (loading) return;
+      if (loading || destroyed) return;
       loading = true;
+      ensureRenderer();
       const order = [0, NF - 1];
       for (let i = 1; i < NF - 1; i++) order.push(i);
       let next = 0;
@@ -127,7 +137,9 @@ export function LamyExploded({ active, onActiveChange }: Props) {
       }
       box.style.width = `${w.toFixed(1)}px`;
       box.style.height = `${h.toFixed(1)}px`;
-      renderer.resize(w, h);
+      boxW = w;
+      boxH = h;
+      renderer?.resize(w, h);
       draw(true);
     };
 
@@ -196,10 +208,32 @@ export function LamyExploded({ active, onActiveChange }: Props) {
       });
     };
 
+    // 로딩 조건: 섹션이 가까이 있고(near) + 히어로 펼치기가 끝났거나 사용자가 스크롤을 시작함(ready)
+    let near = false;
+    let ready = false;
+    const maybeStart = () => {
+      if (near && ready) startLoading();
+    };
+    const onIntroDone = () => {
+      ready = true;
+      maybeStart();
+    };
+    const onFirstScroll = () => {
+      if (window.scrollY <= 0) return;
+      window.removeEventListener('scroll', onFirstScroll);
+      onIntroDone();
+    };
+    window.addEventListener(LAMY_INTRO_DONE, onIntroDone);
+    window.addEventListener('scroll', onFirstScroll, { passive: true });
+    // 이벤트를 놓쳐도 5초 뒤엔 무조건 시작
+    const introFallback = window.setTimeout(onIntroDone, 5000);
+    if (window.scrollY > 0) onIntroDone();
+
     const io = new IntersectionObserver(
       (entries) => {
         if (entries.some((e) => e.isIntersecting)) {
-          startLoading();
+          near = true;
+          maybeStart();
           io.disconnect();
         }
       },
@@ -232,7 +266,10 @@ export function LamyExploded({ active, onActiveChange }: Props) {
       window.removeEventListener('resize', onScrollEvent);
       cancelAnimationFrame(colorRaf);
       cancelAnimationFrame(scrollRaf);
-      renderer.dispose();
+      window.removeEventListener(LAMY_INTRO_DONE, onIntroDone);
+      window.removeEventListener('scroll', onFirstScroll);
+      clearTimeout(introFallback);
+      renderer?.dispose();
     };
   }, []);
 
