@@ -5,6 +5,7 @@ import { CaseStudyBody } from '@/components/case-study/CaseStudyBody';
 import { LamyShowcase } from '@/components/lamy/LamyShowcase';
 import { OopShowcase } from '@/components/oop/OopShowcase';
 import { AcroShowcase } from '@/components/acro/AcroShowcase';
+import { TracklistShowcase } from '@/components/tracklist/TracklistShowcase';
 
 export function generateStaticParams() {
   return projects.map((p) => ({ slug: p.slug }));
@@ -44,6 +45,18 @@ export default function CaseStudyPage({ params }: { params: { slug: string } }) 
     return (
       <>
         <AcroShowcase project={project} />
+        <article className="px-6 max-w-[1400px] mx-auto pb-20">
+          <CaseStudyBody project={project} next={next} />
+        </article>
+      </>
+    );
+  }
+
+  // My Tracklist: 스크롤하는 만큼 35곡이 넘어가는 히어로 (components/tracklist)
+  if (project.showcase === 'tracklist') {
+    return (
+      <>
+        <TracklistShowcase project={project} />
         <article className="px-6 max-w-[1400px] mx-auto pb-20">
           <CaseStudyBody project={project} next={next} />
         </article>

@@ -24,7 +24,7 @@ export type Project = {
     label: string;
     slug: string;
   };
-  showcase?: 'lamy' | 'oop' | 'acro'; // 전용 히어로를 쓰는 프로젝트 (components/lamy, oop, acro)
+  showcase?: 'lamy' | 'oop' | 'acro' | 'tracklist'; // 전용 히어로를 쓰는 프로젝트 (components/lamy, oop, acro, tracklist)
 };
 
 export type ProcessStep = {
@@ -221,6 +221,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'my-tracklist',
+    showcase: 'tracklist',
     number: '004',
     title: 'My Tracklist',
     category: 'Editorial / Book',

@@ -77,7 +77,7 @@ export default function TracksPage() {
               */}
               <img
                 src={track.poster}
-                alt={`${track.artist} — ${track.title}`}
+                alt={`Poster for ${track.title} by ${track.artist}`}
                 loading="lazy"
                 className="w-full h-auto block transition-transform duration-300 ease-editorial group-hover:scale-[1.02]"
               />
@@ -139,7 +139,7 @@ function TrackModal({
         {/* Poster — no box wrapper, natural sizing */}
         <img
           src={track.poster}
-          alt={`${track.artist} — ${track.title}`}
+          alt={`Poster for ${track.title} by ${track.artist}`}
           className={`flex-shrink-0 ${
             track.wide
               ? 'w-full md:w-[60%] h-auto'

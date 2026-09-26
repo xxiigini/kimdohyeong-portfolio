@@ -1,0 +1,248 @@
+/* My Tracklist 히어로: 스크롤 동안 화면에 고정, 곡마다 포스터와 배경색이 바뀜 */
+.tl {
+  position: relative;
+  height: 780vh; /* 스크립트가 화면 크기에 맞춰 정확한 길이로 다시 계산함 */
+}
+/* 배경색은 고정 영역에만 칠함. 상단바 윗줄은 뒤가 비치는 구조라,
+   섹션 전체를 칠하면 검은 포스터에서 메뉴 글자가 묻힘 */
+.sticky {
+  position: sticky;
+  top: 4.5rem;
+  height: calc(100vh - 4.5rem);
+  height: calc(100svh - 4.5rem);
+  overflow: hidden;
+  background: var(--h-bg, var(--bg));
+  color: var(--h-ink, var(--ink));
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+.inner {
+  height: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 28px 24px 14px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  column-gap: 48px;
+}
+
+/* 제목: 스크롤을 시작하면 접힘 */
+.titlewrap {
+  grid-column: 1;
+  grid-row: 1;
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 0.55s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+}
+.titleblock {
+  min-height: 0;
+  overflow: hidden;
+}
+.inner[data-started='1'] .titlewrap {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+
+/* 포스터: 박스 없이 원래 비율 그대로, 지금 곡만 보임 */
+.stage {
+  grid-column: 2;
+  grid-row: 1 / 4;
+  position: relative;
+  min-height: 0;
+}
+.stage img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  opacity: 0;
+  transition: opacity 0.22s linear;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.stage img[data-on='1'][data-ready='1'] {
+  opacity: 1;
+}
+/* 16번 Saturn(가로)만 화면 전체 폭 */
+.inner[data-wide='1'] .stage {
+  grid-column: 1 / -1;
+  grid-row: 1 / 3;
+}
+
+/* 캡션: 아티스트 + 곡 제목, 끝에서는 책 정보와 링크 */
+.cap {
+  grid-column: 1;
+  grid-row: 3;
+  align-self: end;
+  padding: 24px 0 18px;
+  min-width: 0;
+}
+.ck {
+  color: var(--h-ink-soft, var(--ink-tertiary));
+}
+.ct {
+  margin-top: 10px;
+  font-size: 56px;
+  line-height: 62px;
+  letter-spacing: -0.03em;
+  font-weight: 500;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+.cx {
+  display: none;
+  margin-top: 22px;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 24px;
+}
+.cap[data-book='1'] .cx {
+  display: flex;
+}
+
+/* 레일: 35곡 + 책. 클릭하면 이동, 좌우로 드래그하면 스크럽 */
+.foot {
+  grid-column: 1 / -1;
+  grid-row: 4;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.rail {
+  position: relative;
+  flex: 1;
+  height: 28px;
+  cursor: pointer;
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
+}
+.rail:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 4px;
+}
+.base {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.22;
+}
+.fill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(50% - 1px);
+  height: 2px;
+  background: currentColor;
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  will-change: transform;
+}
+.rail i {
+  position: absolute;
+  top: calc(50% - 4px);
+  width: 1px;
+  height: 8px;
+  background: currentColor;
+  opacity: 0.35;
+  pointer-events: none;
+}
+.rail i[data-cur='1'] {
+  top: calc(50% - 8px);
+  height: 16px;
+  opacity: 1;
+}
+.rail i[data-book='1'] {
+  width: 5px;
+  height: 5px;
+  top: calc(50% - 2.5px);
+}
+.rail i[data-book='1'][data-cur='1'] {
+  width: 7px;
+  height: 7px;
+  top: calc(50% - 3.5px);
+}
+.tip {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  transform: translateX(-50%);
+  margin-bottom: 4px;
+  padding: 3px 8px;
+  background: var(--h-ink, var(--ink));
+  color: var(--h-bg, var(--bg));
+  white-space: nowrap;
+  border-radius: 2px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.tip[data-show='1'] {
+  opacity: 1;
+}
+.readout {
+  font-size: 11px;
+  line-height: 16px;
+  letter-spacing: 0.05em;
+  min-width: 64px;
+  text-align: right;
+}
+
+@media (max-width: 1199px) {
+  .ct {
+    font-size: 40px;
+    line-height: 48px;
+    letter-spacing: -0.02em;
+  }
+}
+
+/* 휴대폰: 한 줄로 쌓고, 긴 제목은 두 줄까지 */
+@media (max-width: 899px) {
+  .inner {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 18px 20px 10px;
+    column-gap: 0;
+  }
+  .titleblock {
+    padding-bottom: 16px;
+  }
+  .stage,
+  .inner[data-wide='1'] .stage {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .cap {
+    grid-row: 3;
+    padding: 14px 0 8px;
+    min-height: 104px;
+  }
+  .ct {
+    font-size: 28px;
+    line-height: 34px;
+    margin-top: 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .cap[data-book='1'] .ct {
+    display: block;
+    -webkit-line-clamp: unset;
+  }
+  .foot {
+    grid-row: 4;
+  }
+}
+
+/* 동작 줄이기 설정: 전환 없이 바로 바뀜 (배경색은 엔진에서 사이트 배경으로 고정) */
+@media (prefers-reduced-motion: reduce) {
+  .sticky,
+  .titlewrap,
+  .stage img {
+    transition: none;
+  }
+}
