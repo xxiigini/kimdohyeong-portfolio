@@ -24,7 +24,7 @@ export type Project = {
     label: string;
     slug: string;
   };
-  showcase?: 'lamy' | 'oop' | 'acro' | 'tracklist'; // 전용 히어로를 쓰는 프로젝트 (components/lamy, oop, acro, tracklist)
+  showcase?: 'lamy' | 'oop' | 'acro' | 'tracklist' | 'soban'; // 전용 히어로를 쓰는 프로젝트 (components/lamy, oop, acro, tracklist, soban)
 };
 
 export type ProcessStep = {
@@ -102,6 +102,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'soban',
+    showcase: 'soban',
     number: '003',
     title: 'Soban Korean Eatery',
     category: 'Brand & Menu System',

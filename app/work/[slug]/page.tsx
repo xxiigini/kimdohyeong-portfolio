@@ -6,6 +6,7 @@ import { LamyShowcase } from '@/components/lamy/LamyShowcase';
 import { OopShowcase } from '@/components/oop/OopShowcase';
 import { AcroShowcase } from '@/components/acro/AcroShowcase';
 import { TracklistShowcase } from '@/components/tracklist/TracklistShowcase';
+import { SobanShowcase } from '@/components/soban/SobanShowcase';
 
 export function generateStaticParams() {
   return projects.map((p) => ({ slug: p.slug }));
@@ -45,6 +46,18 @@ export default function CaseStudyPage({ params }: { params: { slug: string } }) 
     return (
       <>
         <AcroShowcase project={project} />
+        <article className="px-6 max-w-[1400px] mx-auto pb-20">
+          <CaseStudyBody project={project} next={next} />
+        </article>
+      </>
+    );
+  }
+
+  // Soban: 예전 / 새 메뉴판 사진을 겹쳐 두고 선으로 비교하는 히어로 (components/soban)
+  if (project.showcase === 'soban') {
+    return (
+      <>
+        <SobanShowcase project={project} />
         <article className="px-6 max-w-[1400px] mx-auto pb-20">
           <CaseStudyBody project={project} next={next} />
         </article>

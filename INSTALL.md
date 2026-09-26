@@ -1,37 +1,33 @@
-# My Tracklist 스크롤 히어로
+# Soban 비교 히어로 (A안)
 
 ## 바뀌는 것
-- My Tracklist 케이스 스터디 맨 위: 화면이 고정된 채로 스크롤하는 만큼 35곡이 넘어감
-- 포스터는 페이드로 바뀌고, 배경은 그 포스터의 대표색 (맨 위는 사이트 배경으로 시작)
-- 16번 Saturn(가로)만 화면 전체 폭, 35번 다음은 책 표지로 착지하면서 Browse all 35 tracks, Blurb 링크
-- 아래 레일: 클릭하면 그 곡으로 이동, 좌우로 드래그하면 스크럽, 포커스 후 ← → 키
-- 동작 줄이기 설정인 사람한테는 색과 페이드 없이 조용하게
-- 배경색은 상단바 아래에만 칠함 (상단바 메뉴 글자가 어두운 포스터에 묻히지 않게)
-- tracks 페이지: 포스터 alt 텍스트의 em dash 두 군데 수정 ("Poster for ILYSB by LANY" 식)
-- 본문, 다른 프로젝트 페이지, 홈 화면은 그대로
+- Soban 케이스 스터디 맨 위: 예전 메뉴판 사진과 새 메뉴판 사진을 겹쳐 두고 세로선으로 비교
+- 두 사진은 화면 네 개 모서리 기준으로 원근을 맞춰 둬서, 선을 움직이면 같은 화면이 그 자리에서 바뀜
+- 처음 화면에 들어오면 한 번만: 전부 Before → 전부 After → 가운데 (두 사진을 다 받은 다음 시작)
+- 사진 아무 데나 드래그하거나, 가운데 동그라미에 포커스 후 ← → 키로 비교
+- 휴대폰에서는 세로로 잘라서 가운데 두 화면이 보이고, 위아래 스크롤은 그대로
+- 동작 줄이기 설정인 사람한테는 쓸기 없이 가운데에서 시작
+- 본문, 다른 프로젝트 페이지, 홈 화면은 그대로 (본문의 before / after 사진도 그대로)
 
 ## 파일
 새로 추가
-- components/tracklist/ : 히어로 컴포넌트, 스크롤 엔진, CSS
-- content/tracklist.ts : 이미지 폴더, 스크롤 길이, 책 표지 문구 (여기서 수정)
-- public/images/tracklist-hero/md/ : 680 × 1020px 포스터 35장 + 책 표지 (약 2.5MB)
-- public/images/tracklist-hero/lg/ : 1000 × 1500px 포스터 35장 + 책 표지 (약 5.2MB)
-  화면 크기에 맞는 한 세트만 받고, 지금 보는 곡 주변부터 받음
+- components/soban/ : 히어로 컴포넌트, 비교 엔진, CSS
+- content/soban.ts : 사진 경로, alt 텍스트, 사진 아래 문구 (여기서 수정)
+- public/images/soban-compare/before.webp : 예전 메뉴판 (새 사진 원근에 맞춰 편 것, 1800 × 720)
+- public/images/soban-compare/after.webp : Hales Corners 새 메뉴판 (1800 × 720)
 
 수정
-- app/work/[slug]/page.tsx : My Tracklist 전용 히어로 연결
-- content/projects.ts : my-tracklist에 showcase: 'tracklist' 추가
-- content/tracks.ts : 곡마다 color(배경색) 추가
-- app/work/my-tracklist/tracks/page.tsx : alt 텍스트 수정
+- app/work/[slug]/page.tsx : Soban 전용 히어로 연결
+- content/projects.ts : soban에 showcase: 'soban' 추가
 
 ## 설치
 1. zip 풀고 안의 내용물을 레포 루트(package.json 있는 폴더)에 복사, 덮어쓰기
 2. git add -A
-   git commit -m "My Tracklist: scroll-driven hero"
+   git commit -m "Soban: before/after compare hero (option A)"
    git push
-3. 2~3분 뒤 kimdohyeong.com/work/my-tracklist 에서 Ctrl+F5
+3. 2~3분 뒤 kimdohyeong.com/work/soban 에서 Ctrl+F5
 
 ## 조절하고 싶을 때
-- 곡별 배경색: content/tracks.ts 의 color (글자색은 밝기 보고 자동으로 정해짐)
-- 스크롤 길이: content/tracklist.ts 의 perTrack (지금 1.6, 보통 1, 짧게 0.6)
-- 책 표지 문구: content/tracklist.ts 의 book
+- 사진 아래 문구, "Drag to compare": content/soban.ts 의 caption, hint
+- 휴대폰에서 보이는 위치: components/soban/soban.module.css 의 --op (지금 44% 50%)
+- 더 큰 원본 사진으로 바꿀 때는 before를 다시 원근에 맞춰야 함 (그냥 바꿔 넣으면 화면이 어긋남)
